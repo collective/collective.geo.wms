@@ -14,15 +14,15 @@
 
 <metal:main fill-slot="content-core">
   <metal:content-core define-macro="content-core">
-        <div id="wmsmap">
+
+        <div id="wtmsmap">
             <metal:use use-macro="context/@@collectivegeo-macros/map-widget"  />
             <script type="text/javascript"
                 src="++resource++geo.kml.javascripts/kml_openlayers.js"></script>
-            <script type="text/javascript" tal:content="structure view/get_proxy_js">
-            </script>
         </div>
         <div class="visualClear">&nbsp;</div>
         <div tal:content="structure context/body_text/output"></div>
+
   </metal:content-core>
 </metal:main>
 

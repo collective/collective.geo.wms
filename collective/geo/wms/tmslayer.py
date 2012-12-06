@@ -21,6 +21,19 @@ from plone.formwidget.contenttree import ObjPathSourceBinder
 from collective.geo.wms import MessageFactory as _
 from collective.geo.wms.tmsserver import ITMSServer
 
+
+@grok.provider(IContextSourceBinder)
+def layers_vocab(context):
+    terms = []
+    for layer in context.server.to_object.layers():
+        terms.append(SimpleVocabulary.createTerm(layer[1],layer[1],layer[0]))
+    return SimpleVocabulary(terms)
+
+
+def isnotempty(value):
+    return bool(value)
+
+
 # Interface class; used to define content-type schema.
 
 class ITMSLayer(form.Schema, IImageScaleTraversable):
@@ -36,11 +49,40 @@ class ITMSLayer(form.Schema, IImageScaleTraversable):
 
     server = RelationChoice(
             title=_(u"Server"),
-            description=_(u"Choose the TMS Server providing this Layer"),
+            description=_(u"Choose the TMS Server providing these Layer"),
             source=ObjPathSourceBinder(object_provides=ITMSServer.__identifier__),
             required=True,
         )
 
+    layers = schema.List(
+            title=_(u"Layers"),
+            description=_(u"WTMS Layers"),
+            required=True,
+            constraint=isnotempty,
+            value_type=schema.Choice(
+                 source=layers_vocab,
+                 required=True,
+                 ),
+        )
+
+    baselayer = schema.Bool(
+            title=_(u"Base Layer"),
+            description=_(u"Is the first Layer a base layer"),
+            required=False,
+            default = False,
+    )
+
+    img_format = schema.Choice(
+         title=u'Format',
+         values=('png', 'jpg'),
+         required=True)
+
+
+    body_text = RichText(
+            title=_(u"Body text"),
+            description=_(u"Enter an long descrition of your layer"),
+            required=False,
+    )
 
 # Custom content-type class; objects created for this content type will
 # be instances of this class. Use this class to add content-type specific
@@ -63,8 +105,25 @@ class TMSLayer(dexterity.Item):
 # of this type by uncommenting the grok.name line below or by
 # changing the view class name and template filename to View / view.pt.
 
-class SampleView(grok.View):
+class View(grok.View):
     grok.context(ITMSLayer)
     grok.require('zope2.View')
+    grok.name('view')
 
-    # grok.name('view')
+
+
+class AddForm(dexterity.AddForm):
+    grok.name('collective.geo.wms.tmslayer')
+
+    def updateWidgets(self):
+        """ """
+        self.fields = self.fields.omit('layers')
+        super(AddForm, self).updateWidgets()
+
+class EditForm(dexterity.EditForm):
+    grok.context(ITMSLayer)
+
+    def updateWidgets(self):
+        """ """
+        self.fields = self.fields.omit('server')
+        super(EditForm, self).updateWidgets()

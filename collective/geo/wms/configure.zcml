@@ -38,6 +38,15 @@
       />
 
 
+  <adapter
+      for=".tmslayer.View
+           zope.interface.Interface
+           zope.interface.Interface
+           zope.interface.Interface"
+      factory=".maplayers.WMTSMapLayers"
+      />
+
+
   <browser:page
       for="Products.CMFPlone.interfaces.IPloneSiteRoot"
       name="openlayers_proxy_view"
