@@ -17,16 +17,18 @@ class WMSMapLayer(MapLayer):
         server_url = self.context.server.to_object.remote_url
         layers = ', '.join(self.context.layers)
         baselayer = str(self.context.baselayer).lower()
+        transparent = str(not self.context.baselayer).lower()
         return u"""
         function() {
                 return new OpenLayers.Layer.WMS("%s",
                 "%s",
-                {layers: '%s', transparent: true},
+                {layers: '%s', transparent: %s},
                 {isBaseLayer: %s });
                 } """ % (self.context.Title().replace("'", "&apos;"),
                         server_url,
                         layers,
-                        baselayer
+                        transparent,
+                        baselayer,
                         )
 
 
