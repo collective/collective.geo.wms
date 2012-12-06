@@ -1,3 +1,4 @@
+import urllib
 from zope import schema
 from zope.event import notify
 from zope.schema.interfaces import IContextSourceBinder
@@ -6,6 +7,8 @@ from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 from zope.interface import invariant, Invalid
 
 from five import grok
+from Products.Five import BrowserView
+
 from plone.directives import dexterity, form
 from plone.dexterity.events import AddCancelledEvent
 
@@ -74,6 +77,16 @@ class WMSServer(dexterity.Item):
 # You may make this the default view for content objects
 # of this type by uncommenting the grok.name line below or by
 # changing the view class name and template filename to View / view.pt.
+
+class Proxy(BrowserView):
+
+
+    def __call__(self):
+        url = urllib.unquote(self.request['url'])
+        data = urllib.urlopen(url).read()
+        import ipdb; ipdb.set_trace()
+        return data
+
 
 class View(grok.View):
     grok.context(IWMSServer)

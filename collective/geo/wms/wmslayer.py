@@ -17,6 +17,8 @@ from plone.app.textfield import RichText
 from z3c.relationfield.schema import RelationList, RelationChoice
 from plone.formwidget.contenttree import ObjPathSourceBinder
 
+from Products.CMFCore.utils import getToolByName
+
 from collective.geo.wms import MessageFactory as _
 from collective.geo.wms.wmsserver import IWMSServer
 
@@ -70,6 +72,14 @@ class IWMSLayer(form.Schema):
             default = False,
     )
 
+
+    body_text = RichText(
+            title=_(u"Body text"),
+            description=_(u"Enter an long descrition of your layer"),
+            required=False,
+    )
+
+
 # Custom content-type class; objects created for this content type will
 # be instances of this class. Use this class to add content-type specific
 # methods and properties. Put methods that are mainly useful for rendering
@@ -91,10 +101,85 @@ class WMSLayer(dexterity.Item):
 # of this type by uncommenting the grok.name line below or by
 # changing the view class name and template filename to View / view.pt.
 
+
+
 class View(grok.View):
     grok.context(IWMSLayer)
     grok.require('zope2.View')
     grok.name('view')
+
+    @property
+    def portal(self):
+        return getToolByName(self.context, 'portal_url').getPortalObject()
+
+
+    def get_js(self):
+        js = """
+         /*<![CDATA[*/
+        $(window).bind("load", function() {
+            var map = cgmap.config['default-cgmap'].map;
+            var wmss = map.getLayersByClass('OpenLayers.Layer.WMS');
+
+            info = new OpenLayers.Control.WMSGetFeatureInfo({
+                url: '%s/@@wms_proxy?url=',
+                title: 'Identify features by clicking',
+                //layers: [wmss],
+                queryVisible: true,
+                eventListeners: {
+                    getfeatureinfo: function(event) {
+                        map.addPopup(new OpenLayers.Popup.FramedCloud(
+                            "chicken",
+                            map.getLonLatFromPixel(event.xy),
+                            null,
+                            event.text,
+                            null,
+                            true
+                        ));
+                    }
+                }
+            });
+            map.addControl(info);
+            info.activate();
+        });
+        /*]]>*/
+        """ % (self.context.server.to_object.absolute_url())
+        return js
+
+
+
+    def get_proxy_js(self):
+        js = """
+         /*<![CDATA[*/
+        $(window).bind("load", function() {
+            OpenLayers.ProxyHost = '%s/@@openlayers_proxy_view?url=';
+
+            var map = cgmap.config['default-cgmap'].map;
+            var wmss = map.getLayersByClass('OpenLayers.Layer.WMS');
+
+            info = new OpenLayers.Control.WMSGetFeatureInfo({
+                url: '%s',
+                title: 'Identify features by clicking',
+                queryVisible: true,
+                eventListeners: {
+                    getfeatureinfo: function(event) {
+                        map.addPopup(new OpenLayers.Popup.FramedCloud(
+                            "chicken",
+                            map.getLonLatFromPixel(event.xy),
+                            null,
+                            event.text,
+                            null,
+                            true
+                        ));
+                    }
+                }
+            });
+            map.addControl(info);
+            info.activate();
+        });
+        /*]]>*/
+        """ % (self.portal.absolute_url(),
+            self.context.server.to_object.remote_url)
+        return js
 
 class AddForm(dexterity.AddForm):
     grok.name('collective.geo.wms.wmslayer')

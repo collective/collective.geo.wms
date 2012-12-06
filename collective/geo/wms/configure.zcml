@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <configure
     xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
     xmlns:five="http://namespaces.zope.org/five"
     xmlns:i18n="http://namespaces.zope.org/i18n"
     xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
@@ -36,6 +37,21 @@
       factory=".maplayers.WMSMapLayers"
       />
 
+
+  <browser:page
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      name="openlayers_proxy_view"
+      class=".views.Proxy"
+      allowed_interface=".views.IProxy"
+      permission="zope2.View"
+      />
+
+  <browser:page
+      for=".wmsserver.IWMSServer"
+      name="wms_proxy"
+      class=".wmsserver.Proxy"
+      permission="zope2.View"
+      />
 
 
 </configure>
