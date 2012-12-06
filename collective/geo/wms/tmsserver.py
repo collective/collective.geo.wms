@@ -146,6 +146,8 @@ class AddForm(dexterity.AddForm):
             obj.setTitle(title)
             obj.setDescription(desc)
             obj.remote_url = url
+            if tags:
+                obj.setSubject(tags)
             # mark only as finished if we get the new object
             self._finishedAdd = True
             IStatusMessage(self.request).addStatusMessage(

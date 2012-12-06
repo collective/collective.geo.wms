@@ -144,10 +144,13 @@ class AddForm(dexterity.AddForm):
             return
         title= wms.identification.title
         desc = wms.identification.abstract
+        tags = wms.identification.keywords
         obj = self.createAndAdd(data)
         if obj is not None:
             obj.setTitle(title)
             obj.setDescription(desc)
+            if tags:
+                obj.setSubject(tags)
             obj.remote_url = url
             # mark only as finished if we get the new object
             self._finishedAdd = True
