@@ -112,41 +112,6 @@ class View(grok.View):
     def portal(self):
         return getToolByName(self.context, 'portal_url').getPortalObject()
 
-
-    def get_js(self):
-        js = """
-         /*<![CDATA[*/
-        $(window).bind("load", function() {
-            var map = cgmap.config['default-cgmap'].map;
-            var wmss = map.getLayersByClass('OpenLayers.Layer.WMS');
-
-            info = new OpenLayers.Control.WMSGetFeatureInfo({
-                url: '%s/@@wms_proxy?url=',
-                title: 'Identify features by clicking',
-                //layers: [wmss],
-                queryVisible: true,
-                eventListeners: {
-                    getfeatureinfo: function(event) {
-                        map.addPopup(new OpenLayers.Popup.FramedCloud(
-                            "chicken",
-                            map.getLonLatFromPixel(event.xy),
-                            null,
-                            event.text,
-                            null,
-                            true
-                        ));
-                    }
-                }
-            });
-            map.addControl(info);
-            info.activate();
-        });
-        /*]]>*/
-        """ % (self.context.server.to_object.absolute_url())
-        return js
-
-
-
     def get_proxy_js(self):
         js = """
          /*<![CDATA[*/

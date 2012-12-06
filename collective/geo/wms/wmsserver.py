@@ -1,4 +1,6 @@
-import urllib
+import urllib, urllib2
+import urlparse
+from time import time
 from zope import schema
 from zope.event import notify
 from zope.schema.interfaces import IContextSourceBinder
@@ -27,10 +29,13 @@ from plone.formwidget.contenttree import ObjPathSourceBinder
 
 from Products.statusmessages.interfaces import IStatusMessage
 
+from plone.memoize import view, ram, instance
+
 from collective.geo.wms import MessageFactory as _
 
 
 from owslib.wms import WebMapService
+from owslib.wms import ServiceException
 
 # Interface class; used to define content-type schema.
 
@@ -57,15 +62,31 @@ class IWMSServer(form.Schema, IImageScaleTraversable):
 # methods and properties. Put methods that are mainly useful for rendering
 # in separate view classes.
 
+#refresh WebMapService once every 100 minutes only
+def _wms_server_cachekey(context, fun, url):
+    ckey = [url, time() // (6000)]
+    return ckey
+
+
 class WMSServer(dexterity.Item):
     grok.implements(IWMSServer)
 
     # Add your class methods and properties here
 
+    @ram.cache(_wms_server_cachekey)
+    def _get_wms_service(self, url):
+        return WebMapService(url)
+
+    def get_wms_service(self):
+        return self._get_wms_service(self.remote_url)
+
     def layers(self):
-        wms = WebMapService(self.remote_url)
+        wms = self.get_wms_service()
         return [(layer.title,id) for id, layer in wms.contents.items()]
 
+    @property
+    def getRemoteUrl(self):
+        return self.remote_url
 
 
 # View class
@@ -78,21 +99,13 @@ class WMSServer(dexterity.Item):
 # of this type by uncommenting the grok.name line below or by
 # changing the view class name and template filename to View / view.pt.
 
-class Proxy(BrowserView):
-
-
-    def __call__(self):
-        url = urllib.unquote(self.request['url'])
-        data = urllib.urlopen(url).read()
-        import ipdb; ipdb.set_trace()
-        return data
-
 
 class View(grok.View):
     grok.context(IWMSServer)
     grok.require('zope2.View')
     grok.name('view')
 
+    #@view.memoize
     def get_layers(self):
         layers = self.context.layers()
         for layer in layers:
@@ -113,20 +126,38 @@ class AddForm(dexterity.AddForm):
         if errors:
             self.status = self.formErrorsMessage
             return
-        wms = WebMapService(data['remote_url'])
+        urlobj = urlparse.urlparse(data['remote_url'])
+        if urlobj.scheme not in ['http', 'https']:
+            IStatusMessage(self.request).addStatusMessage(
+                _(u"Invalid URL - must be http or https"), "error")
+            return
+        if not urlobj.hostname:
+            IStatusMessage(self.request).addStatusMessage(
+                _(u"Invalid URL - no hostname qualified"), "error")
+            return
+        url = urlparse.urlunparse([urlobj.scheme, urlobj.netloc,
+                                    urlobj.path, None, None, None])
+        try:
+            wms = WebMapService(url)
+        except (urllib2.HTTPError, ServiceException) as e:
+            IStatusMessage(self.request).addStatusMessage(e, "error")
+            return
         title= wms.identification.title
         desc = wms.identification.abstract
         obj = self.createAndAdd(data)
         if obj is not None:
             obj.setTitle(title)
             obj.setDescription(desc)
+            obj.remote_url = url
             # mark only as finished if we get the new object
             self._finishedAdd = True
-            IStatusMessage(self.request).addStatusMessage(_(u"Item created"), "info")
+            IStatusMessage(self.request).addStatusMessage(
+                                        _(u"Item created"), "info")
 
     @button.buttonAndHandler(_(u'Cancel'), name='cancel')
     def handleCancel(self, action):
-        IStatusMessage(self.request).addStatusMessage(_(u"Add New Item operation cancelled"), "info")
+        IStatusMessage(self.request).addStatusMessage(
+                _(u"Add New Item operation cancelled"), "info")
         self.request.response.redirect(self.nextURL())
         notify(AddCancelledEvent(self.context))
 

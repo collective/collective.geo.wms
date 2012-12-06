@@ -26,8 +26,7 @@
             <metal:use use-macro="context/@@collectivegeo-macros/map-widget"  />
             <script type="text/javascript"
                 src="++resource++geo.kml.javascripts/kml_openlayers.js"></script>
-            <script type="text/javascript" tal:content="structure view/get_js">
-
+            <script type="text/javascript" tal:content="structure view/get_proxy_js">
             </script>
         </div>
         <div class="visualClear">&nbsp;</div>

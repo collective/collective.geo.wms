@@ -46,12 +46,6 @@
       permission="zope2.View"
       />
 
-  <browser:page
-      for=".wmsserver.IWMSServer"
-      name="wms_proxy"
-      class=".wmsserver.Proxy"
-      permission="zope2.View"
-      />
 
 
 </configure>
