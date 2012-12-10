@@ -34,7 +34,7 @@ from owslib.wmts import WebMapTileService
 
 # Interface class; used to define content-type schema.
 
-class ITMSServer(form.Schema, IImageScaleTraversable):
+class IWMTSServer(form.Schema, IImageScaleTraversable):
     """
     TMS Server
     """
@@ -47,7 +47,7 @@ class ITMSServer(form.Schema, IImageScaleTraversable):
 
     remote_url = schema.TextLine(
             title=_(u"Server URL"),
-            description=_(u"URL of the TMS Server"),
+            description=_(u"URL of the WMTS Server"),
             required=True,
         )
 
@@ -63,8 +63,8 @@ def _wmts_server_cachekey(context, fun, url):
     return ckey
 
 
-class TMSServer(dexterity.Item):
-    grok.implements(ITMSServer)
+class WMTSServer(dexterity.Item):
+    grok.implements(IWMTSServer)
 
     # Add your class methods and properties here
 
@@ -95,7 +95,7 @@ class TMSServer(dexterity.Item):
 # changing the view class name and template filename to View / view.pt.
 
 class View(grok.View):
-    grok.context(ITMSServer)
+    grok.context(IWMTSServer)
     grok.require('zope2.View')
     grok.name('view')
 
@@ -108,7 +108,7 @@ class View(grok.View):
 
 
 class AddForm(dexterity.AddForm):
-    grok.name('collective.geo.wms.tmsserver')
+    grok.name('collective.geo.wms.wmtsserver')
 
     def updateWidgets(self):
         """ """
@@ -161,7 +161,7 @@ class AddForm(dexterity.AddForm):
         notify(AddCancelledEvent(self.context))
 
 class EditForm(dexterity.EditForm):
-    grok.context(ITMSServer)
+    grok.context(IWMTSServer)
 
     def updateWidgets(self):
         """ """

@@ -22,7 +22,7 @@
             </script>
         </div>
         <div class="visualClear">&nbsp;</div>
-        <div tal:content="structure context/body_text/output"></div>
+        <div tal:content="structure context/body_text/output | nothing"></div>
   </metal:content-core>
 </metal:main>
 

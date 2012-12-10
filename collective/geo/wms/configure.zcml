@@ -23,7 +23,7 @@
       name="default"
       title="Collective Geo WMS"
       directory="profiles/default"
-      description="Collective Geo WMS and TMS support"
+      description="Collective Geo WMS and WMTS support"
       provides="Products.GenericSetup.interfaces.EXTENSION"
       />
 
@@ -39,7 +39,7 @@
 
 
   <adapter
-      for=".tmslayer.View
+      for=".wmtslayer.View
            zope.interface.Interface
            zope.interface.Interface
            zope.interface.Interface"

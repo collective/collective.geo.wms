@@ -67,11 +67,33 @@ class IWMSLayer(form.Schema):
 
     baselayer = schema.Bool(
             title=_(u"Base Layer"),
-            description=_(u"Is the Layer a base layer"),
+            description=_(u"Is the (first) Layer a base layer"),
             required=False,
             default = False,
     )
 
+    singlelayers = schema.Bool(
+            title=_(u"Single Layers"),
+            description=_(u"Request the layers seperately from the server and overlay them on the client side"),
+            required=False,
+            default = False,
+    )
+
+
+    opacity = schema.Float(
+        title=_(u"Opacity"),
+        min=0.0,
+        max=1.0,
+        required=True,
+        default=0.7,
+    )
+
+    featureinfo = schema.Bool(
+            title=_(u"Feature Info"),
+            description=_(u"Get feature info for layers and display it in a popup window"),
+            required=False,
+            default = True,
+    )
 
     body_text = RichText(
             title=_(u"Body text"),
@@ -113,38 +135,39 @@ class View(grok.View):
         return getToolByName(self.context, 'portal_url').getPortalObject()
 
     def get_proxy_js(self):
-        js = """
-         /*<![CDATA[*/
-        $(window).bind("load", function() {
-            OpenLayers.ProxyHost = '%s/@@openlayers_proxy_view?url=';
+        if self.context.featureinfo:
+            js = """
+             /*<![CDATA[*/
+            $(window).bind("load", function() {
+                OpenLayers.ProxyHost = '%s/@@openlayers_proxy_view?url=';
 
-            var map = cgmap.config['default-cgmap'].map;
-            var wmss = map.getLayersByClass('OpenLayers.Layer.WMS');
+                var map = cgmap.config['default-cgmap'].map;
+                var wmss = map.getLayersByClass('OpenLayers.Layer.WMS');
 
-            info = new OpenLayers.Control.WMSGetFeatureInfo({
-                url: '%s',
-                title: 'Identify features by clicking',
-                queryVisible: true,
-                eventListeners: {
-                    getfeatureinfo: function(event) {
-                        map.addPopup(new OpenLayers.Popup.FramedCloud(
-                            "chicken",
-                            map.getLonLatFromPixel(event.xy),
-                            null,
-                            event.text,
-                            null,
-                            true
-                        ));
+                info = new OpenLayers.Control.WMSGetFeatureInfo({
+                    url: '%s',
+                    title: 'Identify features by clicking',
+                    queryVisible: true,
+                    eventListeners: {
+                        getfeatureinfo: function(event) {
+                            map.addPopup(new OpenLayers.Popup.FramedCloud(
+                                "chicken",
+                                map.getLonLatFromPixel(event.xy),
+                                null,
+                                event.text,
+                                null,
+                                true
+                            ));
+                        }
                     }
-                }
+                });
+                map.addControl(info);
+                info.activate();
             });
-            map.addControl(info);
-            info.activate();
-        });
-        /*]]>*/
-        """ % (self.portal.absolute_url(),
-            self.context.server.to_object.remote_url)
-        return js
+            /*]]>*/
+            """ % (self.portal.absolute_url(),
+                self.context.server.to_object.remote_url)
+            return js
 
 class AddForm(dexterity.AddForm):
     grok.name('collective.geo.wms.wmslayer')

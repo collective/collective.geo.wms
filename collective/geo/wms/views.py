@@ -29,10 +29,10 @@ class Proxy(BrowserView):
             return
         baseurl = urlparse.urlunparse([urlobj.scheme, urlobj.netloc,
                     urlobj.path, None, None, None])
-        servers = self.portal_catalog(type=['TMSServer', 'WMSServer'])
+        servers = self.portal_catalog(type=['WMTSServer', 'WMSServer'])
         for brain in servers:
             if brain.getRemoteUrl:
                 if brain.getRemoteUrl == baseurl:
                     data = urllib.urlopen(url).read()
                     return data
-
+        import ipdb; ipdb.set_trace()

@@ -18,8 +18,10 @@ from plone.app.textfield import RichText
 from z3c.relationfield.schema import RelationList, RelationChoice
 from plone.formwidget.contenttree import ObjPathSourceBinder
 
+from Products.CMFCore.utils import getToolByName
+
 from collective.geo.wms import MessageFactory as _
-from collective.geo.wms.tmsserver import ITMSServer
+from collective.geo.wms.wmtsserver import IWMTSServer
 
 
 @grok.provider(IContextSourceBinder)
@@ -36,9 +38,9 @@ def isnotempty(value):
 
 # Interface class; used to define content-type schema.
 
-class ITMSLayer(form.Schema, IImageScaleTraversable):
+class IWMTSLayer(form.Schema, IImageScaleTraversable):
     """
-    TMS Layer
+    WMTS Layer
     """
 
     # If you want a schema-defined interface, delete the form.model
@@ -49,14 +51,14 @@ class ITMSLayer(form.Schema, IImageScaleTraversable):
 
     server = RelationChoice(
             title=_(u"Server"),
-            description=_(u"Choose the TMS Server providing these Layer"),
-            source=ObjPathSourceBinder(object_provides=ITMSServer.__identifier__),
+            description=_(u"Choose the WMTS Server providing these Layer"),
+            source=ObjPathSourceBinder(object_provides=IWMTSServer.__identifier__),
             required=True,
         )
 
     layers = schema.List(
             title=_(u"Layers"),
-            description=_(u"WTMS Layers"),
+            description=_(u"WMTS Layers"),
             required=True,
             constraint=isnotempty,
             value_type=schema.Choice(
@@ -73,10 +75,25 @@ class ITMSLayer(form.Schema, IImageScaleTraversable):
     )
 
     img_format = schema.Choice(
-         title=u'Format',
-         values=('png', 'jpg'),
-         required=True)
+         title=_(u'Format'),
+         values=('png', 'jpeg'),
+         required=True,
+    )
 
+    opacity = schema.Float(
+        title=_(u"Opacity"),
+        min=0.0,
+        max=1.0,
+        required=True,
+        default=0.7,
+    )
+
+    featureinfo = schema.Bool(
+            title=_(u"Feature Info"),
+            description=_(u"Get feature info for layers and display it in a popup window"),
+            required=False,
+            default = True,
+    )
 
     body_text = RichText(
             title=_(u"Body text"),
@@ -89,8 +106,8 @@ class ITMSLayer(form.Schema, IImageScaleTraversable):
 # methods and properties. Put methods that are mainly useful for rendering
 # in separate view classes.
 
-class TMSLayer(dexterity.Item):
-    grok.implements(ITMSLayer)
+class WMTSLayer(dexterity.Item):
+    grok.implements(IWMTSLayer)
 
     # Add your class methods and properties here
 
@@ -106,14 +123,51 @@ class TMSLayer(dexterity.Item):
 # changing the view class name and template filename to View / view.pt.
 
 class View(grok.View):
-    grok.context(ITMSLayer)
+    grok.context(IWMTSLayer)
     grok.require('zope2.View')
     grok.name('view')
 
+    @property
+    def portal(self):
+        return getToolByName(self.context, 'portal_url').getPortalObject()
 
+    def get_proxy_js(self):
+        if self.context.featureinfo:
+            js = """
+             /*<![CDATA[*/
+            $(window).bind("load", function() {
+                OpenLayers.ProxyHost = '%s/@@openlayers_proxy_view?url=';
+
+                var map = cgmap.config['default-cgmap'].map;
+                var wmsts = map.getLayersByClass('OpenLayers.Layer.WMTS');
+
+                info = new OpenLayers.Control.WMTSGetFeatureInfo({
+                    url: '%s',
+                    title: 'Identify features by clicking',
+                    queryVisible: true,
+                    eventListeners: {
+                        getfeatureinfo: function(event) {
+                            map.addPopup(new OpenLayers.Popup.FramedCloud(
+                                "chicken",
+                                map.getLonLatFromPixel(event.xy),
+                                null,
+                                event.text,
+                                null,
+                                true
+                            ));
+                        }
+                    }
+                });
+                map.addControl(info);
+                info.activate();
+            });
+            /*]]>*/
+            """ % (self.portal.absolute_url(),
+                self.context.server.to_object.remote_url)
+            return js
 
 class AddForm(dexterity.AddForm):
-    grok.name('collective.geo.wms.tmslayer')
+    grok.name('collective.geo.wms.wmtslayer')
 
     def updateWidgets(self):
         """ """
@@ -121,7 +175,7 @@ class AddForm(dexterity.AddForm):
         super(AddForm, self).updateWidgets()
 
 class EditForm(dexterity.EditForm):
-    grok.context(ITMSLayer)
+    grok.context(IWMTSLayer)
 
     def updateWidgets(self):
         """ """

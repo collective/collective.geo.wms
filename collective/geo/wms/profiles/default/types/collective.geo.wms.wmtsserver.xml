@@ -1,22 +1,22 @@
 <?xml version="1.0"?>
-<object name="collective.geo.wms.tmslayer"
+<object name="collective.geo.wms.wmtsserver"
    meta_type="Dexterity FTI"
    i18n:domain="collective.geo.wms" xmlns:i18n="http://xml.zope.org/namespaces/i18n">
 
   <!-- Basic metadata -->
-  <property name="title" i18n:translate="">TMSLayer</property>
+  <property name="title" i18n:translate="">WMTSServer</property>
   <property name="description"
-    i18n:translate="">TMS Layer</property>
+    i18n:translate="">WMTS Server</property>
   <property name="icon_expr">string:${portal_url}/document_icon.png</property>
-  <property name="factory">collective.geo.wms.tmslayer</property>
+  <property name="factory">collective.geo.wms.wmtsserver</property>
   <property name="global_allow">True</property>
   <property name="filter_content_types">False</property>
   <property name="allowed_content_types" />
   <property name="allow_discussion">False</property>
 
   <!-- schema and class used for content items -->
-  <property name="schema">collective.geo.wms.tmslayer.ITMSLayer</property>
-  <property name="klass">collective.geo.wms.tmslayer.TMSLayer</property>
+  <property name="schema">collective.geo.wms.wmtsserver.IWMTSServer</property>
+  <property name="klass">collective.geo.wms.wmtsserver.WMTSServer</property>
 
   <property name="behaviors">
      <element value="plone.app.content.interfaces.INameFromTitle" />
