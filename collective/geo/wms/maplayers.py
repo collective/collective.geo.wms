@@ -19,8 +19,10 @@ class WMSMapLayer(MapLayer):
         transparent = str(not self.context.baselayer).lower()
         opacity = self.context.opacity
         if self.context.singlelayers:
+            wms = self.context.server.to_object.get_wms_service()
             ollayers = []
             for layer in self.context.layers:
+                layername = wms.contents[layer].title
                 ollayers.append(
                 u"""
                 function() {
@@ -28,7 +30,7 @@ class WMSMapLayer(MapLayer):
                     "%s",
                     {layers: '%s', transparent: %s},
                     {isBaseLayer: %s, opacity: %.1f});
-                    }""" % (layer,
+                    }""" % (layername,
                             server_url,
                             layer,
                             transparent,
@@ -91,6 +93,7 @@ class WMTSMapLayer(MapLayer):
         ollayers = []
         for layer in layers:
             style = wmts.contents[layer].styles.keys()[0]
+            layername = wmts.contents[layer].title
             ollayers.append(
             u"""
             function() {
@@ -111,7 +114,7 @@ class WMTSMapLayer(MapLayer):
                     format:'image/%s',
                     opacity: 0.7,
                     isBaseLayer: %s });
-                    }""" % (layer,
+                    }""" % (layername,
                             server_url, layer, style, format, baselayer
                             ))
             baselayer = 'false'
