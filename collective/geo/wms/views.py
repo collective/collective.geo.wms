@@ -35,4 +35,3 @@ class Proxy(BrowserView):
                 if brain.getRemoteUrl == baseurl:
                     data = urllib.urlopen(url).read()
                     return data
-        import ipdb; ipdb.set_trace()

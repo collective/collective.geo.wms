@@ -7,7 +7,7 @@
   <property name="title" i18n:translate="">WMSLayer</property>
   <property name="description"
     i18n:translate="">WMS Layer</property>
-  <property name="icon_expr">string:${portal_url}/document_icon.png</property>
+  <property name="icon_expr">string:${portal_url}/++resource++layers.png</property>
   <property name="factory">collective.geo.wms.wmslayer</property>
   <property name="global_allow">True</property>
   <property name="filter_content_types">False</property>

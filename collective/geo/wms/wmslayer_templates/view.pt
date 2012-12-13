@@ -9,6 +9,7 @@
     <metal:javascript_head fill-slot="javascript_head_slot">
       <metal:use use-macro="context/@@collectivegeo-macros/openlayers" />
     </metal:javascript_head>
+
 </head>
 <body>
 

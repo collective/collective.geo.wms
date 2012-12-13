@@ -8,8 +8,6 @@
   -->
 <object name="portal_types" meta_type="Plone Types Tool">
   <!-- -*- extra stuff goes here -*- -->
-  <object name="collective.geo.wms.wmtslayer" meta_type="Dexterity FTI" />
   <object name="collective.geo.wms.wmslayer" meta_type="Dexterity FTI" />
-  <object name="collective.geo.wms.wmtsserver" meta_type="Dexterity FTI" />
   <object name="collective.geo.wms.wmsserver" meta_type="Dexterity FTI" />
 </object>

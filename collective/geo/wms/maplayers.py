@@ -3,6 +3,9 @@ from five import grok
 from collective.geo.mapwidget.browser.widget import MapLayers
 from collective.geo.mapwidget.maplayers import MapLayer
 
+
+MAX_EXTENT= "maxExtent: new OpenLayers.Bounds(%f, %f, %f, %f).transform(geographic, mercator),"
+
 class WMSMapLayer(MapLayer):
 
 
@@ -19,7 +22,7 @@ class WMSMapLayer(MapLayer):
         transparent = str(not self.context.baselayer).lower()
         opacity = self.context.opacity
         if self.context.singlelayers:
-            wms = self.context.server.to_object.get_wms_service()
+            wms = self.context.server.to_object.get_service()
             ollayers = []
             for layer in self.context.layers:
                 layername = wms.contents[layer].title
@@ -59,20 +62,6 @@ class WMSMapLayer(MapLayer):
 
 
 
-class WMSMapLayers(MapLayers):
-    '''
-    create all layers for this view.
-    the file itself as a layer +
-    the layer defined by the annotations (if any)
-    '''
-
-    def layers(self):
-        layers = super(WMSMapLayers, self).layers()
-        layers.append(WMSMapLayer(self.context))
-        return layers
-
-
-
 
 class WMTSMapLayer(MapLayer):
 
@@ -86,7 +75,7 @@ class WMTSMapLayer(MapLayer):
         if not context_url.endswith('/'):
             context_url += '/'
         server_url = self.context.server.to_object.remote_url
-        wmts = self.context.server.to_object.get_wmts_service()
+        wmts = self.context.server.to_object.get_service()
         layers = self.context.layers
         format = self.context.img_format
         baselayer = str(self.context.baselayer).lower()
@@ -94,6 +83,11 @@ class WMTSMapLayer(MapLayer):
         for layer in layers:
             style = wmts.contents[layer].styles.keys()[0]
             layername = wmts.contents[layer].title
+            if wmts.contents[layer].boundingBoxWGS84:
+                max_extent = MAX_EXTENT % wmts.contents[layer].boundingBoxWGS84
+            else:
+                max_extent =''
+
             ollayers.append(
             u"""
             function() {
@@ -103,7 +97,7 @@ class WMTSMapLayer(MapLayer):
                     matrixIds[i] = "EPSG:900913:" + i;
                 }
 
-                    return new OpenLayers.Layer.WMTS({
+                return new OpenLayers.Layer.WMTS({
                     name: "%s",
                     url: "%s",
                     layer: '%s',
@@ -115,14 +109,14 @@ class WMTSMapLayer(MapLayer):
                     opacity: 0.7,
                     isBaseLayer: %s });
                     }""" % (layername,
-                            server_url, layer, style, format, baselayer
+                            server_url, layer, style,
+                            format, baselayer
                             ))
             baselayer = 'false'
         return ', '.join(ollayers)
 
 
-
-class WMTSMapLayers(MapLayers):
+class WMSMapLayers(MapLayers):
     '''
     create all layers for this view.
     the file itself as a layer +
@@ -130,6 +124,11 @@ class WMTSMapLayers(MapLayers):
     '''
 
     def layers(self):
-        layers = super(WMTSMapLayers, self).layers()
-        layers.append(WMTSMapLayer(self.context))
+        layers = super(WMSMapLayers, self).layers()
+        if self.context.server.to_object.protocol == 'wms':
+            layers.append(WMSMapLayer(self.context))
+        elif  self.context.server.to_object.protocol == 'wmts':
+            layers.append(WMTSMapLayer(self.context))
         return layers
+
+

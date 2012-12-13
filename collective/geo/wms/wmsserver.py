@@ -35,9 +35,19 @@ from collective.geo.wms import MessageFactory as _
 
 
 from owslib.wms import WebMapService
+try:
+    from owslib.wmts import WebMapTileService
+    protocols = ('wms', 'wmts')
+    default_protocol = u'wmts'
+except ImportError:
+    protocols = ('wms', )
+    default_protocol = u'wms'
+
 from owslib.wms import ServiceException
 
 # Interface class; used to define content-type schema.
+
+
 
 class IWMSServer(form.Schema, IImageScaleTraversable):
     """
@@ -50,11 +60,23 @@ class IWMSServer(form.Schema, IImageScaleTraversable):
     # models/wmsserver.xml to define the content type
     # and add directives here as necessary.
 
+
+    protocol = schema.Choice(
+         title=_(u'Protocol'),
+         values=protocols,
+         required=True,
+         default=default_protocol,
+    )
+
+
     remote_url = schema.TextLine(
             title=_(u"Server URL"),
-            description=_(u"URL of the WMS Server"),
+            description=_(u"URL of the WM(T)S Server"),
             required=True,
         )
+
+
+
 
 
 # Custom content-type class; objects created for this content type will
@@ -63,8 +85,8 @@ class IWMSServer(form.Schema, IImageScaleTraversable):
 # in separate view classes.
 
 #refresh WebMapService once every 100 minutes only
-def _wms_server_cachekey(context, fun, url):
-    ckey = [url, time() // (6000)]
+def _wms_server_cachekey(context, fun, url, protocol):
+    ckey = [url, time() // (6000), protocol]
     return ckey
 
 
@@ -74,14 +96,17 @@ class WMSServer(dexterity.Item):
     # Add your class methods and properties here
 
     @ram.cache(_wms_server_cachekey)
-    def _get_wms_service(self, url):
-        return WebMapService(url)
+    def _get_service(self, url, protocol):
+        if protocol == 'wms':
+            return WebMapService(url)
+        elif protocol == 'wmts':
+            return WebMapTileService(url)
 
-    def get_wms_service(self):
-        return self._get_wms_service(self.remote_url)
+    def get_service(self):
+        return self._get_service(self.remote_url, self.protocol)
 
     def layers(self):
-        wms = self.get_wms_service()
+        wms = self.get_service()
         return [(layer.title,id) for id, layer in wms.contents.items()]
 
     @property
@@ -111,12 +136,16 @@ class View(grok.View):
         for layer in layers:
             yield layer[0]
 
+
+
 class AddForm(dexterity.AddForm):
     grok.name('collective.geo.wms.wmsserver')
 
+
+
     def updateWidgets(self):
         """ """
-        self.fields = self.fields.select('remote_url')
+        self.fields = self.fields.select('remote_url', 'protocol')
         super(AddForm, self).updateWidgets()
 
 
@@ -138,7 +167,10 @@ class AddForm(dexterity.AddForm):
         url = urlparse.urlunparse([urlobj.scheme, urlobj.netloc,
                                     urlobj.path, None, None, None])
         try:
-            wms = WebMapService(url)
+            if data['protocol'] == 'wms':
+                wms = WebMapService(url)
+            elif data['protocol'] == 'wmts':
+                wms = WebMapTileService(url)
         except (urllib2.HTTPError, ServiceException) as e:
             IStatusMessage(self.request).addStatusMessage(e, "error")
             return
@@ -169,5 +201,5 @@ class EditForm(dexterity.EditForm):
 
     def updateWidgets(self):
         """ """
-        self.fields = self.fields.omit('remote_url')
+        self.fields = self.fields.omit('remote_url', 'protocol')
         super(EditForm, self).updateWidgets()

@@ -38,14 +38,6 @@
       />
 
 
-  <adapter
-      for=".wmtslayer.View
-           zope.interface.Interface
-           zope.interface.Interface
-           zope.interface.Interface"
-      factory=".maplayers.WMTSMapLayers"
-      />
-
 
   <browser:page
       for="Products.CMFPlone.interfaces.IPloneSiteRoot"
@@ -55,6 +47,18 @@
       permission="zope2.View"
       />
 
+
+    <browser:resource
+        name="layers.png"
+        file="static/layers.png"
+        layer=".interfaces.IGeoWMSLayer"
+        />
+
+    <browser:resource
+        name="map_server.png"
+        file="static/map_server.png"
+        layer=".interfaces.IGeoWMSLayer"
+        />
 
 
 </configure>

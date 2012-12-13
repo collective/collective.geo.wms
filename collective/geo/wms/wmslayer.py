@@ -48,7 +48,7 @@ class IWMSLayer(form.Schema):
 
     server = RelationChoice(
             title=_(u"Server"),
-            description=_(u"Choose the WMS Server providing this Layer"),
+            description=_(u"Choose the WM(T)S Server providing this Layer"),
             source=ObjPathSourceBinder(object_provides=IWMSServer.__identifier__),
             required=True,
 
@@ -56,7 +56,7 @@ class IWMSLayer(form.Schema):
 
     layers = schema.List(
             title=_(u"Layers"),
-            description=_(u"WMS Layers"),
+            description=_(u"WM(T)S Layers"),
             required=True,
             constraint=isnotempty,
             value_type=schema.Choice(
@@ -72,11 +72,20 @@ class IWMSLayer(form.Schema):
             default = False,
     )
 
+    # wms specific
     singlelayers = schema.Bool(
             title=_(u"Single Layers"),
             description=_(u"Request the layers seperately from the server and overlay them on the client side"),
             required=False,
             default = False,
+    )
+
+    #wmts specific
+    img_format = schema.Choice(
+         title=_(u'Format'),
+         values=('png', 'jpeg'),
+         default='png',
+         required=True,
     )
 
 
@@ -135,16 +144,15 @@ class View(grok.View):
         return getToolByName(self.context, 'portal_url').getPortalObject()
 
     def get_proxy_js(self):
+
         if self.context.featureinfo:
             js = """
              /*<![CDATA[*/
             $(window).bind("load", function() {
                 OpenLayers.ProxyHost = '%s/@@openlayers_proxy_view?url=';
-
                 var map = cgmap.config['default-cgmap'].map;
-                var wmss = map.getLayersByClass('OpenLayers.Layer.WMS');
 
-                info = new OpenLayers.Control.WMSGetFeatureInfo({
+                info = new OpenLayers.Control.%sGetFeatureInfo({
                     url: '%s',
                     title: 'Identify features by clicking',
                     queryVisible: true,
@@ -166,6 +174,7 @@ class View(grok.View):
             });
             /*]]>*/
             """ % (self.portal.absolute_url(),
+                self.context.server.to_object.protocol.upper(),
                 self.context.server.to_object.remote_url)
             return js
 
@@ -183,4 +192,8 @@ class EditForm(dexterity.EditForm):
     def updateWidgets(self):
         """ """
         self.fields = self.fields.omit('server')
+        if self.context.server.to_object.protocol == 'wmts':
+            self.fields = self.fields.omit('singlelayers')
+        else:
+            self.fields = self.fields.omit('img_format')
         super(EditForm, self).updateWidgets()
