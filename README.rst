@@ -2,7 +2,7 @@ Introduction
 ============
 
 collective.geo.wms is a product which enables you to embed
-WMS and TMS layers in your website.
+WMS and WMTS layers in your website.
 
 It is designed to make adding WMS or WMTS layers as easy as possible.
 
