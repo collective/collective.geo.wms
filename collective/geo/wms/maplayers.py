@@ -79,6 +79,7 @@ class WMTSMapLayer(MapLayer):
         layers = self.context.layers
         format = self.context.img_format
         baselayer = str(self.context.baselayer).lower()
+        opacity = self.context.opacity
         ollayers = []
         for layer in layers:
             style = wmts.contents[layer].styles.keys()[0]
@@ -106,11 +107,11 @@ class WMTSMapLayer(MapLayer):
                     matrixIds: matrixIds,
                     zoomOffset: 0,
                     format:'image/%s',
-                    opacity: 0.7,
+                    opacity: %.1f,
                     isBaseLayer: %s });
                     }""" % (layername,
                             server_url, layer, style,
-                            format, baselayer
+                            format, opacity, baselayer
                             ))
             baselayer = 'false'
         return ', '.join(ollayers)

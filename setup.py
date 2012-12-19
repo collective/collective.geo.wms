@@ -33,11 +33,11 @@ setup(name='collective.geo.wms',
       install_requires=[
           'setuptools',
           'OWSLib',
-          'plone.app.dexterity',
-          'grok',
+          'plone.app.dexterity [grok,relations]',
           'plone.namedfile [blobs]',
           'collective.autopermission',
           'collective.geo.mapwidget',
+          'collective.geo.settings',
           # -*- Extra requirements: -*-
       ],
       entry_points="""

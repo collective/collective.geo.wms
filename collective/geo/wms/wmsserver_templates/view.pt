@@ -12,9 +12,9 @@
     URL: <a tal:attributes="href context/remote_url" tal:content="context/remote_url">url</a>
     <br />
     Layers:
-    <ul tal:define="layers view/get_layers">
+    <ol tal:define="layers view/get_layers">
         <li tal:repeat="layer layers" tal:content="layer"> layer name</li>
-    </ul>
+    </ol>
 
 
 

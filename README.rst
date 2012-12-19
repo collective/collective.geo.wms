@@ -8,7 +8,7 @@ It is designed to make adding WMS or WMTS layers as easy as possible.
 
 
 
-Why WMS/TMS
+Why WMS/WMTS
 ------------
 
 You will find thousands of public Map Servers with interesting and
