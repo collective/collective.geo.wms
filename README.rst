@@ -44,6 +44,6 @@ get information about this feature (or features) which are displayed in
 a pop up. This behaviour can be disabled by unchecking 'Feature Info'
 
 
-WMTS is currently only available if you use the latest unreleased version
-of OWSLib from https://github.com/geopython/OWSLib
+WMTS is currently only available if you use the latest version
+of OWSLib (0.6.0)
 
