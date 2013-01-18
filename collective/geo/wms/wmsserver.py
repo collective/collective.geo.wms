@@ -90,7 +90,7 @@ def _wms_server_cachekey(context, fun, url, protocol):
     return ckey
 
 
-class WMSServer(dexterity.Item):
+class WMSServer(dexterity.Container):
     grok.implements(IWMSServer)
 
     # Add your class methods and properties here

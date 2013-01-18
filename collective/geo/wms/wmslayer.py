@@ -75,7 +75,8 @@ class IWMSLayer(form.Schema):
     # wms specific
     singlelayers = schema.Bool(
             title=_(u"Single Layers"),
-            description=_(u"Request the layers seperately from the server and overlay them on the client side"),
+            description=_(u"""Request the layers seperately from the
+            server and overlay them on the client side"""),
             required=False,
             default=False,
     )
@@ -89,6 +90,17 @@ class IWMSLayer(form.Schema):
     )
 
 
+    srs = schema.Choice(
+         title=_(u'Projection'),
+         description=_(u"""Projection (SRS) of the layer"""),
+         #XXX Should the vocabulary come out of the layers?
+         values=('EPSG:900913', 'EPSG:4326'),
+         default='EPSG:900913',
+         required=True,
+    )
+
+
+
     opacity = schema.Float(
         title=_(u"Opacity"),
         min=0.0,
@@ -99,7 +111,8 @@ class IWMSLayer(form.Schema):
 
     featureinfo = schema.Bool(
             title=_(u"Feature Info"),
-            description=_(u"Get feature info for layers and display it in a popup window"),
+            description=_(u"""Get feature info for layers and display it
+            in a popup window"""),
             required=False,
             default = True,
     )
@@ -116,7 +129,7 @@ class IWMSLayer(form.Schema):
 # methods and properties. Put methods that are mainly useful for rendering
 # in separate view classes.
 
-class WMSLayer(dexterity.Item):
+class WMSLayer(dexterity.Container):
     grok.implements(IWMSLayer)
 
     # Add your class methods and properties here
@@ -191,7 +204,7 @@ class EditForm(dexterity.EditForm):
 
     def updateWidgets(self):
         """ """
-        self.fields = self.fields.omit('server')
+        self.fields = self.fields.omit('server', 'srs')
         if self.context.server.to_object.protocol == 'wmts':
             self.fields = self.fields.omit('singlelayers')
         else:

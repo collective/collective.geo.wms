@@ -10,7 +10,7 @@
   <property name="icon_expr">string:${portal_url}/++resource++map_server.png</property>
   <property name="factory">collective.geo.wms.wmsserver</property>
   <property name="global_allow">True</property>
-  <property name="filter_content_types">False</property>
+  <property name="filter_content_types">True</property>
   <property name="allowed_content_types" />
   <property name="allow_discussion">False</property>
 

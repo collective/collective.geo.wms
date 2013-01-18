@@ -1,4 +1,5 @@
 #
+import json
 from five import grok
 from collective.geo.mapwidget.browser.widget import MapLayers
 from collective.geo.mapwidget.maplayers import MapLayer
@@ -29,17 +30,18 @@ class WMSMapLayer(MapLayer):
                 ollayers.append(
                 u"""
                 function() {
-                    return new OpenLayers.Layer.WMS("%s",
-                    "%s",
-                    {layers: '%s', transparent: %s},
-                    {isBaseLayer: %s, opacity: %.1f});
-                    }""" % (layername,
-                            server_url,
-                            layer,
-                            transparent,
-                            baselayer,
-                            opacity,
-                            )
+                    return new OpenLayers.Layer.WMS('%(name)s',
+                    '%(url)s',
+                    {layers: '%(layer)s', transparent: %(transparent)s,
+                    transitionEffect: 'resize',
+                    isBaseLayer: %(baselayer)s, opacity: %(opacity).1f});
+                    }""" % {'name': layername,
+                            'url': server_url,
+                            'layer': layer,
+                            'transparent': transparent,
+                            'baselayer': baselayer,
+                            'opacity': opacity,
+                            }
                 )
                 baselayer = 'false'
                 transparent = 'true'
@@ -48,17 +50,18 @@ class WMSMapLayer(MapLayer):
             layers = ', '.join(self.context.layers)
             return u"""
             function() {
-                    return new OpenLayers.Layer.WMS("%s",
-                    "%s",
-                    {layers: '%s', transparent: %s},
-                    {isBaseLayer: %s, opacity: %.1f});
-                    }""" % (self.context.Title().replace("'", "&apos;"),
-                            server_url,
-                            layers,
-                            transparent,
-                            baselayer,
-                            opacity,
-                            )
+                    return new OpenLayers.Layer.WMS('%(name)s',
+                    '%(url)s',
+                    {layers: '%(layers)s', transparent: %(transparent)s,
+                    transitionEffect:'resize',
+                    isBaseLayer: %(baselayer)s, opacity: %(opacity).1f});
+                    }""" % {'name': self.context.Title().replace("'", "&apos;"),
+                            'url': server_url,
+                            'layers': layers,
+                            'transparent': transparent,
+                            'baselayer': baselayer,
+                            'opacity': opacity,
+                            }
 
 
 
@@ -83,36 +86,53 @@ class WMTSMapLayer(MapLayer):
         ollayers = []
         for layer in layers:
             style = wmts.contents[layer].styles.keys()[0]
-            layername = wmts.contents[layer].title
-            if wmts.contents[layer].boundingBoxWGS84:
-                max_extent = MAX_EXTENT % wmts.contents[layer].boundingBoxWGS84
+            layername = wmts.contents[layer].title.replace("'", "&apos;")
+            #if wmts.contents[layer].boundingBoxWGS84:
+            #    max_extent = MAX_EXTENT % wmts.contents[layer].boundingBoxWGS84
+            #else:
+            #    max_extent =''
+            tilematrixset = None
+            for tms in  wmts.contents[layer].tilematrixsets:
+                if tms == self.context.srs:
+                    tilematrixset = tms
+            if tilematrixset:
+                tilematrixids = []
+                for tm in wmts.tilematrixsets[tilematrixset].tilematrix.values():
+                    tilematrixids.append({
+                    'identifier': tm.identifier,
+                    'scaleDenominator': tm.scaledenominator,
+                    #'topLeftCorner': tm.topleftcorner,
+                    'tileWidth': tm.tilewidth,
+                    'tileHeight': tm.tileheight,
+                    })
             else:
-                max_extent =''
+                raise ValueError('No TileMatrix found')
 
             ollayers.append(
             u"""
             function() {
-
-                var matrixIds = new Array(26);
-                for (var i=0; i<26; ++i) {
-                    matrixIds[i] = "EPSG:900913:" + i;
-                }
-
                 return new OpenLayers.Layer.WMTS({
-                    name: "%s",
-                    url: "%s",
-                    layer: '%s',
-                    style: '%s',
-                    matrixSet: 'EPSG:900913',
-                    matrixIds: matrixIds,
-                    zoomOffset: 0,
-                    format:'image/%s',
-                    opacity: %.1f,
-                    isBaseLayer: %s });
-                    }""" % (layername,
-                            server_url, layer, style,
-                            format, opacity, baselayer
-                            ))
+                    name: "%(name)s",
+                    url: "%(url)s",
+                    layer: '%(layer)s',
+                    style: '%(style)s',
+                    matrixSet: '%(matrixset)s',
+                    matrixIds: %(matrixids)s,
+                    /*zoomOffset: 0,*/
+                    format:'image/%(format)s',
+                    opacity: %(opacity).1f,
+                    transitionEffect:'resize',
+                    isBaseLayer: %(baselayer)s });
+                    }""" % {'name': layername,
+                            'url': server_url,
+                            'layer': layer,
+                            'matrixset': tilematrixset,
+                            'matrixids': json.dumps(tilematrixids),
+                            'style': style,
+                            'format': format,
+                            'opacity': opacity,
+                            'baselayer': baselayer
+                            })
             baselayer = 'false'
         return ', '.join(ollayers)
 
