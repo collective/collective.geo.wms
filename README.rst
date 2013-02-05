@@ -2,24 +2,24 @@ Introduction
 ============
 
 collective.geo.wms is a product which enables you to embed
-WMS and WMTS layers in your website.
+WMS, TMS and WMTS layers in your website.
 
-It is designed to make adding WMS or WMTS layers as easy as possible.
+It is designed to make adding WMS, TMS or WMTS layers as easy as possible.
 
 
 
-Why WMS/WMTS
+Why WMS/TMS/WMTS
 ------------
 
 You will find thousands of public Map Servers with interesting and
 valuable information which you can display on your website. Many of these
-services provide WMS or WMTS only.
+services provide WMS,TMS or WMTS only.
 
 
 Usage
 ------
 
-First you have to add a WMS or WMTS Server to your site. The initial
+First you have to add a WMS Server to your site. The initial
 add form only allows you to enter the url and type of a webservice. The title,
 description and keywords are taken from the service if it produces a valid response
 to the getCapabilities query. When the server could be successfully added
@@ -47,3 +47,5 @@ a pop up. This behaviour can be disabled by unchecking 'Feature Info'
 WMTS is currently only available if you use the latest version
 of OWSLib (0.6.0)
 
+TMS is only available using the current head of
+https://github.com/geopython/OWSLib

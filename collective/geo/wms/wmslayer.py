@@ -25,7 +25,7 @@ from collective.geo.wms.wmsserver import IWMSServer
 @grok.provider(IContextSourceBinder)
 def layers_vocab(context):
     terms = []
-    for layer in context.server.to_object.layers():
+    for layer in context.server.to_object.layers(context.srs, context.img_format):
         terms.append(SimpleVocabulary.createTerm(layer[1],layer[1],layer[0]))
     return SimpleVocabulary(terms)
 
@@ -37,14 +37,8 @@ def isnotempty(value):
 
 class IWMSLayer(form.Schema):
     """
-    WMS Layer
+    WMS/WMTS/TMS Layer
     """
-
-    # If you want a schema-defined interface, delete the form.model
-    # line below and delete the matching file in the models sub-directory.
-    # If you want a model-based interface, edit
-    # models/wmslayer.xml to define the content type
-    # and add directives here as necessary.
 
     server = RelationChoice(
             title=_(u"Server"),
@@ -114,7 +108,7 @@ class IWMSLayer(form.Schema):
             description=_(u"""Get feature info for layers and display it
             in a popup window"""),
             required=False,
-            default = True,
+            default=False,
     )
 
     body_text = RichText(
@@ -207,6 +201,9 @@ class EditForm(dexterity.EditForm):
         self.fields = self.fields.omit('server', 'srs')
         if self.context.server.to_object.protocol == 'wmts':
             self.fields = self.fields.omit('singlelayers')
-        else:
+        elif self.context.server.to_object.protocol == 'wms':
             self.fields = self.fields.omit('img_format')
+        else:
+            self.fields = self.fields.omit('singlelayers', 'img_format',
+                            'featureinfo')
         super(EditForm, self).updateWidgets()

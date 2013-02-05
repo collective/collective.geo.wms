@@ -1,11 +1,65 @@
 #
-import json
+import json, urllib
 from five import grok
 from collective.geo.mapwidget.browser.widget import MapLayers
 from collective.geo.mapwidget.maplayers import MapLayer
 
 
 MAX_EXTENT= "maxExtent: new OpenLayers.Bounds(%f, %f, %f, %f).transform(geographic, mercator),"
+
+class TMSMapLayer(MapLayer):
+
+    def __init__(self, context):
+        self.context = context
+
+    @property
+    def jsfactory(self):
+        context_url = self.context.absolute_url()
+        if not context_url.endswith('/'):
+            context_url += '/'
+        tms = self.context.server.to_object.get_service()
+        layers = self.context.layers
+        format = self.context.img_format
+        baselayer = str(self.context.baselayer).lower()
+        opacity = self.context.opacity
+        ollayers = []
+        base_url = urllib.unquote(tms.url.rstrip('/'))
+        base_url = base_url.rstrip(tms.version)
+        for layer in layers:
+            layername = tms.contents[layer].title
+            layer_id = urllib.unquote(layer).lstrip(base_url
+                            ).lstrip(tms.version).lstrip('/')
+            ollayers.append(u"""
+            function() {
+                return new OpenLayers.Layer.TMS('%(name)s',
+                    '%(url)s',
+                    {layername: '%(layer)s',
+                    serviceVersion: '%(version)s', type: '%(format)s',
+                    transitionEffect: 'resize',
+                    isBaseLayer: %(baselayer)s /*opacity: %(opacity).1f*/})
+                    }
+            """ % {'name': layername,
+                    'url': base_url,
+                    'layer': layer_id,
+                    'version': tms.version,
+                    'format': format,
+                    'baselayer': baselayer,
+                    'opacity': opacity,}
+
+            )
+            baselayer = 'false'
+        return ', '.join(ollayers)
+
+        return u"""
+        function() {
+                    return new OpenLayers.Layer.TMS(
+                "My Layer", // name for display in LayerSwitcher
+                "http://geonode.iwlearn.org/geoserver/gwc/service/tms/1.0.0", // service endpoint
+                {layername: "geonode:LMEs_64@EPSG:900913@png", type: "png", // required properties
+                serviceVersion: ''}
+        );}
+        """
+
 
 class WMSMapLayer(MapLayer):
 
@@ -150,6 +204,8 @@ class WMSMapLayers(MapLayers):
             layers.append(WMSMapLayer(self.context))
         elif  self.context.server.to_object.protocol == 'wmts':
             layers.append(WMTSMapLayer(self.context))
+        elif  self.context.server.to_object.protocol == 'tms':
+            layers.append(TMSMapLayer(self.context))
         return layers
 
 

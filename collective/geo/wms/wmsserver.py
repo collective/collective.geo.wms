@@ -1,6 +1,7 @@
 import urllib, urllib2
 import urlparse
 from time import time
+import logging
 from zope import schema
 from zope.event import notify
 from zope.schema.interfaces import IContextSourceBinder
@@ -35,19 +36,23 @@ from collective.geo.wms import MessageFactory as _
 
 
 from owslib.wms import WebMapService
+from owslib.wmts import WebMapTileService
+
+protocols = ('wms', 'wmts')
+default_protocol = u'wmts'
+
 try:
-    from owslib.wmts import WebMapTileService
-    protocols = ('wms', 'wmts')
-    default_protocol = u'wmts'
+    from owslib.tms import TileMapService
+    protocols = ('wms', 'wmts', 'tms')
 except ImportError:
-    protocols = ('wms', )
-    default_protocol = u'wms'
+    pass
+
 
 from owslib.wms import ServiceException
 
 # Interface class; used to define content-type schema.
 
-
+logger = logging.getLogger('collective.geo.wms')
 
 class IWMSServer(form.Schema, IImageScaleTraversable):
     """
@@ -71,7 +76,7 @@ class IWMSServer(form.Schema, IImageScaleTraversable):
 
     remote_url = schema.TextLine(
             title=_(u"Server URL"),
-            description=_(u"URL of the WM(T)S Server"),
+            description=_(u"URL of the WMS/TMS/WMTS Server"),
             required=True,
         )
 
@@ -90,6 +95,13 @@ def _wms_server_cachekey(context, fun, url, protocol):
     return ckey
 
 
+def _is_format(layer, format):
+    try:
+        return layer.mimetype == 'image/%s' % format
+    except:
+        logger.error('Error fetching layer %s' % layer.id)
+        return False
+
 class WMSServer(dexterity.Container):
     grok.implements(IWMSServer)
 
@@ -101,13 +113,21 @@ class WMSServer(dexterity.Container):
             return WebMapService(url)
         elif protocol == 'wmts':
             return WebMapTileService(url)
+        elif protocol == 'tms':
+            return TileMapService(url)
 
     def get_service(self):
         return self._get_service(self.remote_url, self.protocol)
 
-    def layers(self):
+    def layers(self, srs=None, format=None):
         wms = self.get_service()
-        return [(layer.title,id) for id, layer in wms.contents.items()]
+        if self.protocol == 'tms':
+            if format:
+                return [(layer.title,id) for id, layer in wms.items(srs)
+                        if _is_format(layer,format)
+                ]
+        else:
+            return [(layer.title,id) for id, layer in wms.items()]
 
     @property
     def getRemoteUrl(self):
@@ -171,6 +191,8 @@ class AddForm(dexterity.AddForm):
                 wms = WebMapService(url)
             elif data['protocol'] == 'wmts':
                 wms = WebMapTileService(url)
+            elif data['protocol'] == 'tms':
+                wms = TileMapService(url)
         except (urllib2.HTTPError, ServiceException) as e:
             IStatusMessage(self.request).addStatusMessage(e, "error")
             return
