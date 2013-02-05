@@ -95,12 +95,28 @@ def _wms_server_cachekey(context, fun, url, protocol):
     return ckey
 
 
-def _is_format(layer, format):
+def _tms_has_format(layer, format):
     try:
         return layer.mimetype == 'image/%s' % format
     except:
         logger.error('Error fetching layer %s' % layer.id)
         return False
+
+def _wmts_has_format(layer, format):
+    if format:
+        return 'image/%s' % format in layer.formats
+    else:
+        return True
+
+def _wmts_has_srs(layer, srs):
+    if srs:
+        return srs in layer.tilematrixsets
+    else:
+        return True
+
+def _wmts_has_format_srs(layer, format, srs):
+    return _wmts_has_format(layer, format) and _wmts_has_srs(layer, srs)
+
 
 class WMSServer(dexterity.Container):
     grok.implements(IWMSServer)
@@ -124,10 +140,13 @@ class WMSServer(dexterity.Container):
         if self.protocol == 'tms':
             if format:
                 return [(layer.title,id) for id, layer in wms.items(srs)
-                        if _is_format(layer,format)
+                        if _tms_has_format(layer,format)
                 ]
             else:
                 return [(layer.title,id) for id, layer in wms.items(srs)]
+        if self.protocol == 'wmts':
+            return [(layer.title,id) for id, layer in wms.items()
+                if _wmts_has_format_srs(layer, format, srs)]
         else:
             return [(layer.title,id) for id, layer in wms.items()]
 
