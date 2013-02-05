@@ -126,6 +126,8 @@ class WMSServer(dexterity.Container):
                 return [(layer.title,id) for id, layer in wms.items(srs)
                         if _is_format(layer,format)
                 ]
+            else:
+                return [(layer.title,id) for id, layer in wms.items(srs)]
         else:
             return [(layer.title,id) for id, layer in wms.items()]
 
@@ -150,7 +152,6 @@ class View(grok.View):
     grok.require('zope2.View')
     grok.name('view')
 
-    #@view.memoize
     def get_layers(self):
         layers = self.context.layers()
         for layer in layers:
@@ -161,13 +162,10 @@ class View(grok.View):
 class AddForm(dexterity.AddForm):
     grok.name('collective.geo.wms.wmsserver')
 
-
-
     def updateWidgets(self):
         """ """
         self.fields = self.fields.select('remote_url', 'protocol')
         super(AddForm, self).updateWidgets()
-
 
     @button.buttonAndHandler(_('Save'), name='save')
     def handleAdd(self, action):
