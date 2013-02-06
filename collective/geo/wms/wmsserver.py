@@ -193,6 +193,13 @@ class AddForm(dexterity.AddForm):
             self.status = self.formErrorsMessage
             return
         urlobj = urlparse.urlparse(data['remote_url'])
+        qsl=urlparse.parse_qsl(urlobj.query)
+        query = []
+        for v in qsl:
+            if v[0].lower() in ('service', 'request', 'version'):
+                continue
+            else:
+                query.append(v)
         if urlobj.scheme not in ['http', 'https']:
             IStatusMessage(self.request).addStatusMessage(
                 _(u"Invalid URL - must be http or https"), "error")
@@ -202,7 +209,9 @@ class AddForm(dexterity.AddForm):
                 _(u"Invalid URL - no hostname qualified"), "error")
             return
         url = urlparse.urlunparse([urlobj.scheme, urlobj.netloc,
-                                    urlobj.path, None, None, None])
+                                    urlobj.path, urlobj.params,
+                                    urllib.urlencode(query),
+                                    urlobj.fragment])
         try:
             if data['protocol'] == 'wms':
                 wms = WebMapService(url)

@@ -50,16 +50,6 @@ class TMSMapLayer(MapLayer):
             baselayer = 'false'
         return ', '.join(ollayers)
 
-        return u"""
-        function() {
-                    return new OpenLayers.Layer.TMS(
-                "My Layer", // name for display in LayerSwitcher
-                "http://geonode.iwlearn.org/geoserver/gwc/service/tms/1.0.0", // service endpoint
-                {layername: "geonode:LMEs_64@EPSG:900913@png", type: "png", // required properties
-                serviceVersion: ''}
-        );}
-        """
-
 
 class WMSMapLayer(MapLayer):
 
