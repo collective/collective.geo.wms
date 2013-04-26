@@ -1,0 +1,5 @@
+include *.rst
+recursive-include docs *
+recursive-include collective *
+recursive-exclude collective *.pyc *.pyo
+global-exclude *.pyc

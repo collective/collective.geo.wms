@@ -9,7 +9,7 @@ It is designed to make adding WMS, TMS or WMTS layers as easy as possible.
 
 
 Why WMS/TMS/WMTS
-------------
+-----------------
 
 You will find thousands of public Map Servers with interesting and
 valuable information which you can display on your website. Many of these
@@ -43,9 +43,5 @@ When you click on a feature on the map a request is sent to the server to
 get information about this feature (or features) which are displayed in
 a pop up. This behaviour can be disabled by unchecking 'Feature Info'
 
-
-WMTS is currently only available if you use the latest version
-of OWSLib (0.6.0)
-
-TMS is only available using the current head of
-https://github.com/geopython/OWSLib
+You need the latest version of OWSLib (currently 0.7.2) to use TMS and
+WMTS
