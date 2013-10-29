@@ -157,8 +157,7 @@ class View(grok.View):
              /*<![CDATA[*/
             $(window).bind("load", function() {
                 OpenLayers.ProxyHost = '%s/@@openlayers_proxy_view?url=';
-                var map = cgmap.config['default-cgmap'].map;
-
+                var map = $('#default-cgmap').data('collectivegeo').mapwidget.map;
                 info = new OpenLayers.Control.%sGetFeatureInfo({
                     url: '%s',
                     title: 'Identify features by clicking',
