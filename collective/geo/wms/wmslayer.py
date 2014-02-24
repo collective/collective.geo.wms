@@ -80,7 +80,7 @@ class IWMSLayer(form.Schema):
             description=_(u"""Request the layers seperately from the
             server and overlay them on the client side"""),
             required=False,
-            default=False,
+            default=True,
     )
 
     defaultlayers = schema.Bool(

@@ -22,6 +22,7 @@ class TMSMapLayer(MapLayer):
         format = self.context.img_format
         baselayer = str(self.context.baselayer).lower()
         opacity = self.context.opacity
+        projection = self.context.srs
         ollayers = []
         base_url = urllib.unquote(tms.url.rstrip('/'))
         base_url = base_url.rstrip(tms.version)
@@ -36,6 +37,7 @@ class TMSMapLayer(MapLayer):
                     {layername: '%(layer)s',
                     serviceVersion: '%(version)s', type: '%(format)s',
                     transitionEffect: 'resize',
+                    projection: new OpenLayers.Projection("%(projection)s"),
                     isBaseLayer: %(baselayer)s /*opacity: %(opacity).1f*/})
                     }
             """ % {'name': layername,
@@ -44,7 +46,8 @@ class TMSMapLayer(MapLayer):
                     'version': tms.version,
                     'format': format,
                     'baselayer': baselayer,
-                    'opacity': opacity,}
+                    'opacity': opacity,
+                    'projection': projection,}
 
             )
             baselayer = 'false'
@@ -79,8 +82,8 @@ class WMSMapLayer(MapLayer):
                     '%(url)s',
                     {layers: '%(layer)s', transparent: %(transparent)s,
                     transitionEffect: 'resize',
-                    isBaseLayer: %(baselayer)s, opacity: %(opacity).1f},
-                    projectionOptions['%(projection)']);
+                    projection: new OpenLayers.Projection("%(projection)s"),
+                    isBaseLayer: %(baselayer)s, opacity: %(opacity).1f});
                     }""" % {'name': layername,
                             'url': server_url,
                             'layer': layer,
@@ -101,8 +104,8 @@ class WMSMapLayer(MapLayer):
                     '%(url)s',
                     {layers: '%(layers)s', transparent: %(transparent)s,
                     transitionEffect:'resize',
-                    isBaseLayer: %(baselayer)s, opacity: %(opacity).1f},
-                    projectionOptions['%(projection)']);
+                    %(projection)s
+                    isBaseLayer: %(baselayer)s, opacity: %(opacity).1f});
                     }""" % {'name': self.context.Title().replace("'", "&apos;"),
                             'url': server_url,
                             'layers': layers,
@@ -132,6 +135,7 @@ class WMTSMapLayer(MapLayer):
         format = self.context.img_format
         baselayer = str(self.context.baselayer).lower()
         opacity = self.context.opacity
+        projection = self.context.srs
         ollayers = []
         for layer in layers:
             style = wmts.contents[layer].styles.keys()[0]
@@ -169,6 +173,7 @@ class WMTSMapLayer(MapLayer):
                     matrixIds: %(matrixids)s,
                     /*zoomOffset: 0,*/
                     format:'image/%(format)s',
+                    projection: new OpenLayers.Projection("%(projection)s"),
                     opacity: %(opacity).1f,
                     transitionEffect:'resize',
                     isBaseLayer: %(baselayer)s });
@@ -180,6 +185,7 @@ class WMTSMapLayer(MapLayer):
                             'style': style,
                             'format': format,
                             'opacity': opacity,
+                            'projection': projection,
                             'baselayer': baselayer
                             })
             baselayer = 'false'
@@ -196,6 +202,8 @@ class WMSMapLayers(MapLayers):
     def layers(self):
         if self.context.defaultlayers:
             layers = super(WMSMapLayers, self).layers()
+        else:
+            layers=[]
         if self.context.server.to_object.protocol == 'wms':
             layers.append(WMSMapLayer(self.context))
         elif  self.context.server.to_object.protocol == 'wmts':
