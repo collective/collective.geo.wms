@@ -104,7 +104,7 @@ class WMSMapLayer(MapLayer):
                     '%(url)s',
                     {layers: '%(layers)s', transparent: %(transparent)s,
                     transitionEffect:'resize',
-                    %(projection)s
+                    projection: new OpenLayers.Projection("%(projection)s"),
                     isBaseLayer: %(baselayer)s, opacity: %(opacity).1f});
                     }""" % {'name': self.context.Title().replace("'", "&apos;"),
                             'url': server_url,
@@ -171,7 +171,6 @@ class WMTSMapLayer(MapLayer):
                     style: '%(style)s',
                     matrixSet: '%(matrixset)s',
                     matrixIds: %(matrixids)s,
-                    /*zoomOffset: 0,*/
                     format:'image/%(format)s',
                     projection: new OpenLayers.Projection("%(projection)s"),
                     opacity: %(opacity).1f,
