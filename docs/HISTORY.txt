@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.2 (2013/10/30)
+-----------------
+
+- fix to work with new version of c.g.mapwidget
+
 0.1dev (2013/04/26)
 -------------------
 

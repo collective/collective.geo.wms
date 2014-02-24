@@ -140,13 +140,15 @@ class WMSServer(dexterity.Container):
         if self.protocol == 'tms':
             if format:
                 return [(layer.title,id) for id, layer in wms.items(srs)
-                        if _tms_has_format(layer,format)
-                ]
+                        if _tms_has_format(layer,format)]
             else:
                 return [(layer.title,id) for id, layer in wms.items(srs)]
         if self.protocol == 'wmts':
             return [(layer.title,id) for id, layer in wms.items()
                 if _wmts_has_format_srs(layer, format, srs)]
+        elif self.protocol == 'wms':
+            return [(layer.title,id) for id, layer in wms.items()
+                if srs in layer.crsOptions]
         else:
             return [(layer.title,id) for id, layer in wms.items()]
 
@@ -154,6 +156,24 @@ class WMSServer(dexterity.Container):
     def getRemoteUrl(self):
         return self.remote_url
 
+    def get_crs_options(self):
+        wms = self.get_service()
+        srs = []
+        if self.protocol == 'tms':
+            for layer in wms.items():
+                try:
+                    srs.append(layer[1].srsOptions)
+                except:
+                    pass
+        if self.protocol == 'wmts':
+            for layer in wms.items():
+                srs += layer[1].tilematrixsets
+        elif self.protocol == 'wms':
+            for layer in wms.items():
+                srs += (layer[1].crsOptions)
+        srs = list(set(srs))
+        srs.sort()
+        return srs
 
 # View class
 # The view will automatically use a similarly named template in

@@ -65,6 +65,7 @@ class WMSMapLayer(MapLayer):
         server_url = self.context.server.to_object.remote_url
         baselayer = str(self.context.baselayer).lower()
         transparent = str(not self.context.baselayer).lower()
+        projection = self.context.srs
         opacity = self.context.opacity
         if self.context.singlelayers:
             wms = self.context.server.to_object.get_service()
@@ -78,13 +79,15 @@ class WMSMapLayer(MapLayer):
                     '%(url)s',
                     {layers: '%(layer)s', transparent: %(transparent)s,
                     transitionEffect: 'resize',
-                    isBaseLayer: %(baselayer)s, opacity: %(opacity).1f});
+                    isBaseLayer: %(baselayer)s, opacity: %(opacity).1f},
+                    projectionOptions['%(projection)']);
                     }""" % {'name': layername,
                             'url': server_url,
                             'layer': layer,
                             'transparent': transparent,
                             'baselayer': baselayer,
                             'opacity': opacity,
+                            'projection': projection,
                             }
                 )
                 baselayer = 'false'
@@ -98,13 +101,15 @@ class WMSMapLayer(MapLayer):
                     '%(url)s',
                     {layers: '%(layers)s', transparent: %(transparent)s,
                     transitionEffect:'resize',
-                    isBaseLayer: %(baselayer)s, opacity: %(opacity).1f});
+                    isBaseLayer: %(baselayer)s, opacity: %(opacity).1f},
+                    projectionOptions['%(projection)']);
                     }""" % {'name': self.context.Title().replace("'", "&apos;"),
                             'url': server_url,
                             'layers': layers,
                             'transparent': transparent,
                             'baselayer': baselayer,
                             'opacity': opacity,
+                            'projection': projection,
                             }
 
 
@@ -189,7 +194,8 @@ class WMSMapLayers(MapLayers):
     '''
 
     def layers(self):
-        layers = super(WMSMapLayers, self).layers()
+        if self.context.defaultlayers:
+            layers = super(WMSMapLayers, self).layers()
         if self.context.server.to_object.protocol == 'wms':
             layers.append(WMSMapLayer(self.context))
         elif  self.context.server.to_object.protocol == 'wmts':

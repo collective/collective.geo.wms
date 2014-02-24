@@ -29,6 +29,14 @@ def layers_vocab(context):
         terms.append(SimpleVocabulary.createTerm(layer[1],layer[1],layer[0]))
     return SimpleVocabulary(terms)
 
+@grok.provider(IContextSourceBinder)
+def crs_vocab(context):
+    terms = []
+    for srs in context.server.to_object.get_crs_options():
+        terms.append(SimpleVocabulary.createTerm(srs,srs,srs))
+    return SimpleVocabulary(terms)
+
+
 
 def isnotempty(value):
     return bool(value)
@@ -75,6 +83,14 @@ class IWMSLayer(form.Schema):
             default=False,
     )
 
+    defaultlayers = schema.Bool(
+            title=_(u"Default Layers"),
+            description=_(u"""If you don't want to get the default layers
+            (OSM etc) uncheck this option (required if your SRS != EPSG:900913)"""),
+            required=False,
+            default=True,
+    )
+
     #wmts specific
     img_format = schema.Choice(
          title=_(u'Format'),
@@ -83,17 +99,13 @@ class IWMSLayer(form.Schema):
          required=True,
     )
 
-
     srs = schema.Choice(
          title=_(u'Projection'),
          description=_(u"""Projection (SRS) of the layer"""),
-         #XXX Should the vocabulary come out of the layers?
-         values=('EPSG:900913', 'EPSG:4326'),
+         source=crs_vocab,
          default='EPSG:900913',
          required=True,
     )
-
-
 
     opacity = schema.Float(
         title=_(u"Opacity"),
@@ -189,7 +201,7 @@ class AddForm(dexterity.AddForm):
 
     def updateWidgets(self):
         """ """
-        self.fields = self.fields.omit('layers')
+        self.fields = self.fields.omit('layers', 'srs')
         super(AddForm, self).updateWidgets()
 
 class EditForm(dexterity.EditForm):
@@ -197,7 +209,7 @@ class EditForm(dexterity.EditForm):
 
     def updateWidgets(self):
         """ """
-        self.fields = self.fields.omit('server', 'srs')
+        self.fields = self.fields.omit('server')
         if self.context.server.to_object.protocol == 'wmts':
             self.fields = self.fields.omit('singlelayers')
         elif self.context.server.to_object.protocol == 'wms':
