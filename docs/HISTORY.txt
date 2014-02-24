@@ -5,6 +5,8 @@ Changelog
 -----------------
 
 - fix to work with new version of c.g.mapwidget
+- get crs out of layers
+- add option to suppress default baselayers (OSM, ...)
 
 0.1dev (2013/04/26)
 -------------------
