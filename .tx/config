@@ -1,0 +1,10 @@
+[main]
+host = https://www.transifex.com
+
+[plone-collective.collective-geo-wms-pot]
+file_filter = collective/geo/wms/locales/<lang>/LC_MESSAGES/collective.geo.wms.po
+minimum_perc = 0
+source_file = collective/geo/wms/locales/collective.geo.wms.pot
+source_lang = en
+type = PO
+

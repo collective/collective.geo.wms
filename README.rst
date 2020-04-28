@@ -45,3 +45,15 @@ a pop up. This behaviour can be disabled by unchecking 'Feature Info'
 
 You need the latest version of OWSLib (currently 0.7.2) to use TMS and
 WMTS
+
+
+Translations
+------------
+
+This product has been translated into
+
+- Spanish.
+
+You can contribute for any message missing or other new languages, join us at 
+`Plone Collective Team <https://www.transifex.com/plone/plone-collective/>`_ 
+into *Transifex.net* service with all world Plone translators community.
