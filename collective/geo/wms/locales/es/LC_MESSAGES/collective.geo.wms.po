@@ -1,0 +1,148 @@
+# Translation of collective.geo.wms.pot to Spanish
+# Leonardo J. Caballero G. <leonardocaballero@gmail.com>, 2020.
+msgid ""
+msgstr ""
+"Project-Id-Version: collective.geo.wms\n"
+"POT-Creation-Date: 2020-04-28 05:15-0400\n"
+"PO-Revision-Date: 2020-04-28 05:45-0400\n"
+"Last-Translator: Leonardo J. Caballero G. <leonardocaballero@gmail.com>\n"
+"Language-Team: ES <LL@li.org>\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Virtaal 0.7.1\n"
+"Language-Code: es\n"
+"Language-Name: Spanish\n"
+"Preferred-Encodings: utf-8 latin1\n"
+"Domain: collective.geo.wms\n"
+"X-Is-Fallback-For: es-ar es-bo es-cl es-co es-cr es-do es-ec es-es es-sv es-gt es-hn es-mx es-ni es-pa es-py es-pe es-pr es-us es-uy es-ve\n"
+
+#: ../wmsserver.py:263
+msgid "Add New Item operation cancelled"
+msgstr "Operación Añadir nuevo elemento cancelada"
+
+#: ../wmslayer.py:71
+msgid "Base Layer"
+msgstr "Capa base"
+
+#: ../wmslayer.py:127
+msgid "Body text"
+msgstr "Cuerpo de texto"
+
+#: ../wmsserver.py:260
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: ../wmslayer.py:53
+msgid "Choose the WM(T)S Server providing this Layer"
+msgstr "Elija el servidor WM(T)S que proporciona esta capa"
+
+#: ../configure.zcml:28
+msgid "Collective Geo WMS"
+msgstr "collective.geo con WMS"
+
+#: ../configure.zcml:28
+msgid "Collective Geo WMS and WMTS support"
+msgstr "collective.geo con soporte WMS y WMTS"
+
+#: ../wmslayer.py:87
+msgid "Default Layers"
+msgstr "Capas predeterminadas"
+
+#: ../wmslayer.py:128
+msgid "Enter an long descrition of your layer"
+msgstr "Ingrese una descripción larga de su capa"
+
+#: ../wmslayer.py:119
+msgid "Feature Info"
+msgstr "Información de Característica"
+
+#: ../wmslayer.py:96
+msgid "Format"
+msgstr "Formato"
+
+#: ../wmsserver.py:225
+msgid "Invalid URL - must be http or https"
+msgstr "Dirección URL inválido - debe ser http o https"
+
+#: ../wmsserver.py:229
+msgid "Invalid URL - no hostname qualified"
+msgstr "Dirección URL inválida - sin nombre de host calificado"
+
+#: ../wmslayer.py:72
+msgid "Is the (first) Layer a base layer"
+msgstr "¿Es la (primera) capa una capa base?"
+
+#: ../wmsserver.py:258
+msgid "Item created"
+msgstr "Elemento creado"
+
+#: ../wmslayer.py:60
+msgid "Layers"
+msgstr "Capas"
+
+#: ../wmsserver_templates/view.pt:14
+msgid "Layers:"
+msgstr "Capas:"
+
+#: ../wmslayer.py:111
+msgid "Opacity"
+msgstr "Opacidad"
+
+#: ../wmslayer.py:103
+msgid "Projection"
+msgstr "Proyección"
+
+#: ../wmslayer.py:104
+msgid "Projection (SRS) of the layer"
+msgstr "Proyección (SRS) de la capa"
+
+#: ../wmsserver.py:70
+msgid "Protocol"
+msgstr "Protocolo"
+
+#: ../wmsserver.py:209
+msgid "Save"
+msgstr "Guardar"
+
+#: ../wmslayer.py:52
+msgid "Server"
+msgstr "Servidor"
+
+#: ../wmsserver.py:78
+msgid "Server URL"
+msgstr "URL del servidor"
+
+#: ../wmslayer.py:79
+msgid "Single Layers"
+msgstr "Capas individuales"
+
+#: ../wmsserver.py:79
+msgid "URL of the WMS/TMS/WMTS Server"
+msgstr "URL del servidor WMS/TMS/WMTS"
+
+#: ../wmsserver_templates/view.pt:12
+msgid "URL:"
+msgstr "Dirección URL:"
+
+#: ../wmslayer.py:61
+msgid "WM(T)S Layers"
+msgstr "Capas WM(T)S"
+
+#: ../profiles/default/types/collective.geo.wms.wmslayer.xml
+msgid "WMS Layer"
+msgstr "Capa WMS"
+
+#: ../profiles/default/types/collective.geo.wms.wmsserver.xml
+msgid "WMS Server"
+msgstr "Servidor WMS"
+
+#: ../profiles/default/types/collective.geo.wms.wmslayer.xml
+msgid "WMSLayer"
+msgstr "Capa WMS"
+
+#: ../profiles/default/types/collective.geo.wms.wmsserver.xml
+msgid "WMSServer"
+msgstr "Servidor WMS"
