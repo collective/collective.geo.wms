@@ -1,0 +1,161 @@
+# --- PLEASE EDIT THE LINES BELOW CORRECTLY ---
+# SOME DESCRIPTIVE TITLE.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2020-04-28 09:38+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"Language-Code: en\n"
+"Language-Name: English\n"
+"Preferred-Encodings: utf-8 latin1\n"
+"Domain: collective.geo.wms\n"
+
+#: ../wmsserver.py:263
+msgid "Add New Item operation cancelled"
+msgstr ""
+
+#: ../wmslayer.py:71
+msgid "Base Layer"
+msgstr ""
+
+#: ../wmslayer.py:127
+msgid "Body text"
+msgstr ""
+
+#: ../wmsserver.py:260
+msgid "Cancel"
+msgstr ""
+
+#: ../wmslayer.py:53
+msgid "Choose the WM(T)S Server providing this Layer"
+msgstr ""
+
+#: ../configure.zcml:28
+msgid "Collective Geo WMS"
+msgstr ""
+
+#: ../configure.zcml:28
+msgid "Collective Geo WMS and WMTS support"
+msgstr ""
+
+#: ../wmslayer.py:87
+msgid "Default Layers"
+msgstr ""
+
+#: ../wmslayer.py:128
+msgid "Enter an long descrition of your layer"
+msgstr ""
+
+#: ../wmslayer.py:119
+msgid "Feature Info"
+msgstr ""
+
+#: ../wmslayer.py:96
+msgid "Format"
+msgstr ""
+
+#: ../wmslayer.py:120
+msgid "Get feature info for layers and display it
+            in a popup window"
+msgstr ""
+
+#: ../wmslayer.py:88
+msgid "If you don't want to get the default layers
+            (OSM etc) uncheck this option (required if your SRS != EPSG:900913)"
+msgstr ""
+
+#: ../wmsserver.py:225
+msgid "Invalid URL - must be http or https"
+msgstr ""
+
+#: ../wmsserver.py:229
+msgid "Invalid URL - no hostname qualified"
+msgstr ""
+
+#: ../wmslayer.py:72
+msgid "Is the (first) Layer a base layer"
+msgstr ""
+
+#: ../wmsserver.py:258
+msgid "Item created"
+msgstr ""
+
+#: ../wmslayer.py:60
+msgid "Layers"
+msgstr ""
+
+#: ../wmsserver_templates/view.pt:14
+msgid "Layers:"
+msgstr ""
+
+#: ../wmslayer.py:111
+msgid "Opacity"
+msgstr ""
+
+#: ../wmslayer.py:103
+msgid "Projection"
+msgstr ""
+
+#: ../wmslayer.py:104
+msgid "Projection (SRS) of the layer"
+msgstr ""
+
+#: ../wmsserver.py:70
+msgid "Protocol"
+msgstr ""
+
+#: ../wmslayer.py:80
+msgid "Request the layers seperately from the
+            server and overlay them on the client side"
+msgstr ""
+
+#: ../wmsserver.py:209
+msgid "Save"
+msgstr ""
+
+#: ../wmslayer.py:52
+msgid "Server"
+msgstr ""
+
+#: ../wmsserver.py:78
+msgid "Server URL"
+msgstr ""
+
+#: ../wmslayer.py:79
+msgid "Single Layers"
+msgstr ""
+
+#: ../wmsserver.py:79
+msgid "URL of the WMS/TMS/WMTS Server"
+msgstr ""
+
+#: ../wmsserver_templates/view.pt:12
+msgid "URL:"
+msgstr ""
+
+#: ../wmslayer.py:61
+msgid "WM(T)S Layers"
+msgstr ""
+
+#: ../profiles/default/types/collective.geo.wms.wmslayer.xml
+msgid "WMS Layer"
+msgstr ""
+
+#: ../profiles/default/types/collective.geo.wms.wmsserver.xml
+msgid "WMS Server"
+msgstr ""
+
+#: ../profiles/default/types/collective.geo.wms.wmslayer.xml
+msgid "WMSLayer"
+msgstr ""
+
+#: ../profiles/default/types/collective.geo.wms.wmsserver.xml
+msgid "WMSServer"
+msgstr ""

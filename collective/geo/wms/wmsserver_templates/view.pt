@@ -9,9 +9,9 @@
 
 <metal:main fill-slot="content-core">
   <metal:content-core define-macro="content-core">
-    URL: <a tal:attributes="href context/remote_url" tal:content="context/remote_url">url</a>
+    <i18n:block i18n:translate="">URL:</i18n:block> <a tal:attributes="href context/remote_url" tal:content="context/remote_url">url</a>
     <br />
-    Layers:
+    <i18n:block i18n:translate="">Layers:</i18n:block>
     <ol tal:define="layers view/get_layers">
         <li tal:repeat="layer layers" tal:content="layer"> layer name</li>
     </ol>
