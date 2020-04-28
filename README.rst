@@ -7,6 +7,12 @@ WMS, TMS and WMTS layers in your website.
 It is designed to make adding WMS, TMS or WMTS layers as easy as possible.
 
 
+Documentation
+=============
+
+Full documentation for end users can be found in the "docs" folder.
+
+
 
 Why WMS/TMS/WMTS
 -----------------
@@ -48,7 +54,7 @@ WMTS
 
 
 Translations
-------------
+============
 
 This product has been translated into
 
@@ -57,3 +63,33 @@ This product has been translated into
 You can contribute for any message missing or other new languages, join us at 
 `Plone Collective Team <https://www.transifex.com/plone/plone-collective/>`_ 
 into *Transifex.net* service with all world Plone translators community.
+
+
+Tests status
+============
+
+This add-on is tested using Travis CI. The current status of the add-on is:
+
+.. image:: https://img.shields.io/travis/collective/collective.geo.wms/master.svg
+    :target: https://travis-ci.org/collective/collective.geo.wms
+
+.. image:: http://img.shields.io/pypi/v/collective.geo.wms.svg
+   :target: https://pypi.org/project/collective.geo.wms
+
+
+Contribute
+==========
+
+Have an idea? Found a bug? Let us know by `opening a ticket`_.
+
+- Issue Tracker: https://github.com/collective/collective.geo.wms/issues
+- Source Code: https://github.com/collective/collective.geo.wms
+- Documentation: https://collectivegeo.readthedocs.io/
+
+
+License
+=======
+
+The project is licensed under the GPL.
+
+.. _`opening a ticket`: https://github.com/collective/collective.geo.bundle/issues
