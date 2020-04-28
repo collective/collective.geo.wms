@@ -3,8 +3,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: collective.geo.wms\n"
-"POT-Creation-Date: 2020-04-28 05:15-0400\n"
-"PO-Revision-Date: 2020-04-28 05:45-0400\n"
+"POT-Creation-Date: 2020-04-28 10:11+0000\n"
+"PO-Revision-Date: 2020-04-28 06:13-0400\n"
 "Last-Translator: Leonardo J. Caballero G. <leonardocaballero@gmail.com>\n"
 "Language-Team: ES <LL@li.org>\n"
 "Language: es\n"
@@ -63,6 +63,14 @@ msgstr "Información de Característica"
 msgid "Format"
 msgstr "Formato"
 
+#: ../wmslayer.py:120
+msgid "Get feature info for layers and display it in a popup window"
+msgstr "Obtenga información de entidades para capas y muéstrela en una ventana emergente"
+
+#: ../wmslayer.py:88
+msgid "If you don't want to get the default layers (OSM etc) uncheck this option (required if your SRS != EPSG:900913)"
+msgstr "Si no desea obtener las capas predeterminadas (OSM, etc.), desactive esta opción (necesaria si su SRS != EPSG:900913)"
+
 #: ../wmsserver.py:225
 msgid "Invalid URL - must be http or https"
 msgstr "Dirección URL inválido - debe ser http o https"
@@ -102,6 +110,10 @@ msgstr "Proyección (SRS) de la capa"
 #: ../wmsserver.py:70
 msgid "Protocol"
 msgstr "Protocolo"
+
+#: ../wmslayer.py:80
+msgid "Request the layers seperately from the server and overlay them on the client side"
+msgstr "Solicite las capas por separado del servidor y superpongalas en el lado del cliente"
 
 #: ../wmsserver.py:209
 msgid "Save"
