@@ -90,6 +90,6 @@ Have an idea? Found a bug? Let us know by `opening a ticket`_.
 License
 =======
 
-The project is licensed under the GPL.
+The project is licensed under the GPLv2.
 
 .. _`opening a ticket`: https://github.com/collective/collective.geo.bundle/issues
