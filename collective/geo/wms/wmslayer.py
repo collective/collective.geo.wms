@@ -77,16 +77,16 @@ class IWMSLayer(form.Schema):
     # wms specific
     singlelayers = schema.Bool(
             title=_(u"Single Layers"),
-            description=_(u"""Request the layers seperately from the
-            server and overlay them on the client side"""),
+            description=_(u"Request the layers seperately from the "
+                          u"server and overlay them on the client side"),
             required=False,
             default=True,
     )
 
     defaultlayers = schema.Bool(
             title=_(u"Default Layers"),
-            description=_(u"""If you don't want to get the default layers
-            (OSM etc) uncheck this option (required if your SRS != EPSG:900913)"""),
+            description=_(u"If you don't want to get the default layers "
+                          u"(OSM etc) uncheck this option (required if your SRS != EPSG:900913)"),
             required=False,
             default=True,
     )
@@ -117,8 +117,8 @@ class IWMSLayer(form.Schema):
 
     featureinfo = schema.Bool(
             title=_(u"Feature Info"),
-            description=_(u"""Get feature info for layers and display it
-            in a popup window"""),
+            description=_(u"Get feature info for layers and display it "
+                          u"in a popup window"),
             required=False,
             default=False,
     )

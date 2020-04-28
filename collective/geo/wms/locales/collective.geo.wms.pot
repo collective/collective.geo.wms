@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2020-04-28 09:38+0000\n"
+"POT-Creation-Date: 2020-04-28 10:11+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -62,13 +62,11 @@ msgid "Format"
 msgstr ""
 
 #: ../wmslayer.py:120
-msgid "Get feature info for layers and display it
-            in a popup window"
+msgid "Get feature info for layers and display it in a popup window"
 msgstr ""
 
 #: ../wmslayer.py:88
-msgid "If you don't want to get the default layers
-            (OSM etc) uncheck this option (required if your SRS != EPSG:900913)"
+msgid "If you don't want to get the default layers (OSM etc) uncheck this option (required if your SRS != EPSG:900913)"
 msgstr ""
 
 #: ../wmsserver.py:225
@@ -112,8 +110,7 @@ msgid "Protocol"
 msgstr ""
 
 #: ../wmslayer.py:80
-msgid "Request the layers seperately from the
-            server and overlay them on the client side"
+msgid "Request the layers seperately from the server and overlay them on the client side"
 msgstr ""
 
 #: ../wmsserver.py:209
