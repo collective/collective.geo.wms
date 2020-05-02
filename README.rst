@@ -1,17 +1,10 @@
 Introduction
 ============
 
-collective.geo.wms is a product which enables you to embed
-WMS, TMS and WMTS layers in your website.
+``collective.geo.wms`` is a product which enables you to embed
+WMS, TMS and WMTS layers in your `Plone`_ website using `collective.geo`_.
 
 It is designed to make adding WMS, TMS or WMTS layers as easy as possible.
-
-
-Documentation
-=============
-
-Full documentation for end users can be found in the "docs" folder.
-
 
 
 Why WMS/TMS/WMTS
@@ -26,11 +19,11 @@ Usage
 ------
 
 First you have to add a WMS Server to your site. The initial
-add form only allows you to enter the url and type of a webservice. The title,
+add form only allows you to enter the URL and type of a webservice. The title,
 description and keywords are taken from the service if it produces a valid response
 to the getCapabilities query. When the server could be successfully added
-you can change the title, descripton and keywords. You are not allowed to change
-the server url or protocol. A list of layers that are available on this server will
+you can change the title, description and keywords. You are not allowed to change
+the server URL or protocol. A list of layers that are available on this server will
 be requested directly from the server. The list of layers will be cached
 for 100 minutes so if layers are added on the server you may have to wait
 up to 2 hours for them to refresh.
@@ -41,16 +34,23 @@ are displayed as a Map.
 In the add form you choose the service for your maps. You cannot change
 the server later by editing the layer. After you added the layer you have
 to choose the layers of the service you want to display in your map. Some
-WMS Servers do not support overlaying layers on the serverside if this is
+WMS Servers do not support overlaying layers on the server side if this is
 the case for the server you are connecting to you have to check
 'Single Layers' for them to display.
 
 When you click on a feature on the map a request is sent to the server to
 get information about this feature (or features) which are displayed in
-a pop up. This behaviour can be disabled by unchecking 'Feature Info'
+a pop up. This behavior can be disabled by unchecking 'Feature Info'
 
 You need the latest version of OWSLib (currently 0.7.2) to use TMS and
-WMTS
+WMTS.
+
+
+Documentation
+=============
+
+Full documentation for end users can be found in the "docs" folder.
+It is also available online at https://collectivegeo.readthedocs.io/
 
 
 Translations
@@ -92,4 +92,6 @@ License
 
 The project is licensed under the GPLv2.
 
+.. _Plone: https://plone.org/
+.. _collective.geo: https://pypi.org/project/collective.geo.bundle
 .. _`opening a ticket`: https://github.com/collective/collective.geo.bundle/issues
